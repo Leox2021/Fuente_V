@@ -1,0 +1,19 @@
+
+CREATE OR REPLACE TABLE  `merchant-center-1566207903338.Union_V.test_az_bounty_xport`
+
+AS
+
+SELECT
+
+Fecha_de_enviado AS Fecha,
+"Amazon" AS Plataforma,
+"Bounty" AS Anunciantes,
+"Other" AS sub_id_css,
+CAST (SUM(Tasas_de_anuncios___) AS NUMERIC) AS Importe_de_venta,
+CAST (SUM(Cantidad) AS NUMERIC) AS Ventas,
+CAST (SUM(Tasas_de_anuncios___) AS NUMERIC) AS Comisiones
+
+
+FROM `merchant-center-1566207903338.conversions_uploads__EU.bounty`
+
+GROUP BY 1
