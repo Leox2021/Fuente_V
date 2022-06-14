@@ -1,0 +1,23 @@
+
+CREATE OR REPLACE TABLE  `merchant-center-1566207903338.Union_V.test_amazon_xport`
+
+AS
+
+SELECT
+
+
+Fecha_de_env_o AS Fecha,
+"Amazon" AS Plataforma,
+"Amazon" AS Anunciantes,
+"Other" AS sub_id_css,
+CAST (SUM(Ingresos____) AS NUMERIC) AS Importe_de_venta,
+COUNT(CONCAT(ID_de_seguimiento,ASIN)) AS Ventas,
+CAST(SUM(Tarifas_de_publicaci_n____) AS NUMERIC) AS Comisiones
+
+
+
+FROM `merchant-center-1566207903338.conversions_uploads__EU.amazon_fee_earnings`
+
+WHERE DATE (Fecha_de_env_o) between '2022-06-01' and '2022-06-13'
+
+GROUP BY 1,2,3,4
