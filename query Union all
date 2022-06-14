@@ -1,0 +1,107 @@
+CREATE OR REPLACE TABLE `merchant-center-1566207903338.Union_V.test2` 
+
+AS  
+
+WITH WCT AS 
+
+(
+  SELECT
+  
+  
+order_date AS Fecha,
+network_name AS Plataforma,
+advertiser_name AS Anunciantes,
+
+CASE 
+      WHEN REGEXP_CONTAINS(sub_id_1,".*-CSS$") THEN "Google Shopping"
+      WHEN REGEXP_CONTAINS(sub_id_1,".*_BwE$") THEN "Google Shopping"
+      WHEN REGEXP_CONTAINS(sub_id_1,".*_wcB") THEN "Google Shopping"
+      WHEN REGEXP_CONTAINS(sub_id_1,".*\\-FGB.*") THEN "Ad Search"
+      WHEN REGEXP_CONTAINS(sub_id_1,"^FGB.*") THEN "Other"
+      ELSE "Other"
+    END AS sub_id_css,
+
+SUM(sale_amount) AS Importe_de_venta,     
+COUNT(transaction_id) AS Ventas,
+SUM(commission_amount) AS Comisiones,
+
+
+FROM `merchant-center-1566207903338.conversions.conversions`
+
+
+
+WHERE order_date > '2021-10-01'
+
+GROUP BY 1,2,3,4
+),
+
+Amazon AS 
+
+(
+ SELECT
+
+
+Fecha_de_env_o AS Fecha,
+"Amazon" AS Plataforma,
+"Amazon" AS Anunciantes,
+"Other" AS sub_id_css,
+CAST (SUM(Ingresos____) AS NUMERIC) AS Importe_de_venta,
+COUNT(CONCAT(ID_de_seguimiento,ASIN)) AS Ventas,
+CAST(SUM(Tarifas_de_publicaci_n____) AS NUMERIC) AS Comisiones
+
+
+
+FROM `merchant-center-1566207903338.conversions_uploads__EU.amazon_fee_earnings`
+  
+GROUP BY 1,2,3,4
+),
+
+Bounty_Az AS 
+
+(
+SELECT
+
+TIMESTAMP(Fecha_de_enviado )  AS Fecha,
+"Amazon" AS Plataforma,
+"Bounty" AS Anunciantes,
+"Other" AS sub_id_css,
+CAST (SUM(Tasas_de_anuncios___) AS NUMERIC) AS Importe_de_venta,
+SUM(Cantidad)  AS Ventas,
+CAST (SUM(Tasas_de_anuncios___) AS NUMERIC) AS Comisiones
+
+
+FROM `merchant-center-1566207903338.conversions_uploads__EU.bounty`
+
+GROUP BY 1
+),
+
+Mycook AS 
+
+(
+
+SELECT
+
+Fecha,
+IF (REGEXP_CONTAINS(Producto, '.*Mycook.*'), "Mycook", "MycookTaurus")  AS Plataforma,
+IF (REGEXP_CONTAINS(Producto, '.*Mycook.*'), "Mycook", "MycookTaurus")  AS Anunciantes,
+IF(Refer_ncia IS NULL, "Other", "Google Ads")  AS sub_id_css,
+CAST (SUM(Total) AS NUMERIC) AS Importe_de_venta,
+COUNT(*) AS Ventas,
+CAST (SUM(Ingreso) AS NUMERIC) AS Comisiones
+
+FROM `merchant-center-1566207903338.conversions_uploads__EU.mycook`
+
+GROUP BY 1,2,3,4
+ 
+)
+
+
+SELECT * FROM WCT
+
+UNION ALL SELECT * FROM Amazon
+
+UNION ALL SELECT * FROM Bounty_Az
+
+UNION ALL SELECT * FROM Mycook
+
+
