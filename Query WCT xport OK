@@ -1,0 +1,31 @@
+CREATE OR REPLACE TABLE `merchant-center-1566207903338.Union_V.test_WCT_xport`
+
+AS 
+
+
+SELECT
+
+
+order_date AS Fecha,
+network_name AS Plataforma,
+advertiser_name AS Anunciantes,
+
+CASE 
+      WHEN REGEXP_CONTAINS(sub_id_1,".*-CSS$") THEN "Google Shopping"
+      WHEN REGEXP_CONTAINS(sub_id_1,".*_BwE$") THEN "Google Shopping"
+      WHEN REGEXP_CONTAINS(sub_id_1,".*_wcB") THEN "Google Shopping"
+      WHEN REGEXP_CONTAINS(sub_id_1,".*\\-FGB.*") THEN "Ad Search"
+      WHEN REGEXP_CONTAINS(sub_id_1,"^FGB.*") THEN "Other"
+      ELSE "Other"
+    END AS sub_id_css,
+
+SUM(sale_amount) AS Importe_de_venta,     
+COUNT(transaction_id) AS Ventas,
+SUM(commission_amount) AS Comisiones,
+
+
+FROM `merchant-center-1566207903338.conversions.conversions`
+
+WHERE DATE(order_date) between '2022-06-01' and '2022-06-13'
+
+GROUP BY 1,2,3,4
