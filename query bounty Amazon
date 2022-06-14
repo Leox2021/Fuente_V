@@ -5,7 +5,7 @@ AS
 
 SELECT
 
-Fecha_de_enviado AS Fecha,
+TIMESTAMP(Fecha_de_enviado )  AS Fecha,
 "Amazon" AS Plataforma,
 "Bounty" AS Anunciantes,
 "Other" AS sub_id_css,
