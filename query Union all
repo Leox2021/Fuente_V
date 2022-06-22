@@ -15,7 +15,7 @@ advertiser_name AS Anunciantes,
 CASE 
       WHEN REGEXP_CONTAINS(sub_id_1,".*-CSS$") THEN "Google Shopping"
       WHEN REGEXP_CONTAINS(sub_id_1,".*_BwE$") THEN "Google Shopping"
-      WHEN REGEXP_CONTAINS(sub_id_1,".*_wcB") THEN "Google Shopping"
+      WHEN REGEXP_CONTAINS(sub_id_1,".*_wcB$") THEN "Google Shopping"
       WHEN REGEXP_CONTAINS(sub_id_1,".*\\-FGB.*") THEN "Ad Search"
       WHEN REGEXP_CONTAINS(sub_id_1,"^FGB.*") THEN "Other"
       ELSE "Other"
