@@ -1,4 +1,6 @@
-CREATE OR REPLACE TABLE `merchant-center-1566207903338.Union_V.test2` 
+#StandardSQL
+
+CREATE OR REPLACE TABLE `merchant-center-1566207903338.Union_V.Union_V` 
 
 AS  
 
@@ -51,7 +53,7 @@ CAST(SUM(Tarifas_de_publicaci_n____) AS NUMERIC) AS Comisiones
 
 
 
-FROM `merchant-center-1566207903338.conversions_uploads__EU.amazon_fee_earnings`
+FROM `merchant-center-1566207903338.conversions_uploads_xls.amazon_fee_earnings`
   
 GROUP BY 1,2,3,4
 ),
@@ -70,7 +72,7 @@ SUM(Cantidad)  AS Ventas,
 CAST (SUM(Tasas_de_anuncios___) AS NUMERIC) AS Comisiones
 
 
-FROM `merchant-center-1566207903338.conversions_uploads__EU.bounty`
+FROM `merchant-center-1566207903338.conversions_uploads_xls.amazon_bounty`
 
 GROUP BY 1
 ),
@@ -81,19 +83,23 @@ Mycook AS
 
 SELECT
 
-Fecha,
+TIMESTAMP(Fecha) AS Fecha,
 IF (REGEXP_CONTAINS(Producto, '.*Mycook.*'), "Mycook", "MycookTaurus")  AS Plataforma,
 IF (REGEXP_CONTAINS(Producto, '.*Mycook.*'), "Mycook", "MycookTaurus")  AS Anunciantes,
-IF(Refer_ncia IS NULL, "Other", "Google Ads")  AS sub_id_css,
+IF(Refer_ncia IS NULL, "Other", "Google Shopping")  AS sub_id_css,
 CAST (SUM(Total) AS NUMERIC) AS Importe_de_venta,
 COUNT(*) AS Ventas,
 CAST (SUM(Ingreso) AS NUMERIC) AS Comisiones
 
-FROM `merchant-center-1566207903338.conversions_uploads__EU.mycook`
+FROM `merchant-center-1566207903338.conversions_uploads_xls.Mycook`
 
 GROUP BY 1,2,3,4
  
-)
+),
+
+Union_commission AS 
+
+(
 
 
 SELECT * FROM WCT
@@ -104,4 +110,8 @@ UNION ALL SELECT * FROM Bounty_Az
 
 UNION ALL SELECT * FROM Mycook
 
+)
 
+SELECT * FROM Union_commission as u 
+LEFT JOIN `merchant-center-1566207903338.Union_V.vLookup_clientId` as v 
+ON u.Anunciantes = v.string_field_0
