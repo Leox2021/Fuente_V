@@ -97,6 +97,27 @@ GROUP BY 1,2,3,4
  
 ),
 
+Cecotec AS 
+(
+SELECT 
+
+TIMESTAMP(Hora_de_evento) AS Fecha,
+"Cecotec" AS Plataforma,
+"Cecotec" AS Anunciantes,
+"Other" AS sub_id_css,
+CAST (SUM(Valor_de_compra) AS NUMERIC) AS Importe_de_venta,
+COUNT(*) AS Ventas,
+CAST(SUM(Comisi_n__Afiliado) AS NUMERIC) AS Comisiones
+
+
+FROM `merchant-center-1566207903338.conversions_uploads_xls.cecotec`
+
+WHERE Evento_Estado != "D"
+
+GROUP BY 1,2,3,4
+
+),
+
 Union_commission AS 
 
 (
@@ -109,6 +130,8 @@ UNION ALL SELECT * FROM Amazon
 UNION ALL SELECT * FROM Bounty_Az
 
 UNION ALL SELECT * FROM Mycook
+
+UNION ALL SELECT * FROM Cecotec 
 
 )
 
