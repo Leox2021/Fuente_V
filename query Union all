@@ -33,6 +33,7 @@ FROM `merchant-center-1566207903338.conversions.conversions`
 
 
 WHERE order_date > '2021-10-01'
+AND status != 'declined'  # filtro para quitar comisiones rechazadas
 
 GROUP BY 1,2,3,4
 ),
